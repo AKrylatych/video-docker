@@ -1,5 +1,4 @@
 <?php
-$apiroot="http://api.video-docker.online/";
 class Database
 {
     private $host;
@@ -13,12 +12,16 @@ class Database
         $this->db = getenv("POSTGRES_DB");
         $this->user = getenv("POSTGRES_USER");
         $this->password = getenv("POSTGRES_PASSWORD"); // change to your password
+        $this->getConnection();
 
     }
 
-    public function getConnection() {
-        $this->conn = pg_connect("host=$this->host dbname=$this->db user=$this->user password=$this->password")
-        or die (pg_last_error($this->conn));
+    private function getConnection() {
+            $this->conn = @pg_connect("host=$this->host dbname=$this->db user=$this->user password=$this->password");
+            if (!$this->conn) {
+                header('Location: http://video-docker.online/08001.html');
+                exit(1);
+            }
     }
 
 }
