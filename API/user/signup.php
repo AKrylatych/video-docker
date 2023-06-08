@@ -1,11 +1,10 @@
 <?php
-
+header('Content-Type: application/json; charset=utf-8');
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 include_once "../objects/User.php";
 include_once "../config/Database.php";
-
 $conn = new Database();
 $conn->getConnection();
 $user = new User($conn);
@@ -25,6 +24,8 @@ if ($user->new_user($user->email, $user->password)) {
         "message" => "Failed to create user."
     );
 }
+header('Content-Type: application/json; charset=utf-8');
+
 print_r(json_encode($output));
 
 

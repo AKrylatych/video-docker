@@ -9,20 +9,10 @@ class Database
     public $conn;
 
     public function __construct() {
-        $host = getenv("HOST");
-        $db = getenv("DB");
-        $user = getenv("POSTGRES_USER");
-        $password = getenv("POSTGRES_PASSWORD"); // change to your password
-    }
-
-    public function test_con() {
-        $host = getenv("HOST");
-        $db = getenv("DB");
-        $user = getenv("POSTGRES_USER");
-        $password = getenv("POSTGRES_PASSWORD"); // change to your password
-
-        $this->conn = pg_connect("host=$host dbname=$db user=$user password=$password")
-        or die (pg_last_error($this->conn));
+        $this->host = getenv("DB_HOST");
+        $this->db = getenv("POSTGRES_DB");
+        $this->user = getenv("POSTGRES_USER");
+        $this->password = getenv("POSTGRES_PASSWORD"); // change to your password
 
     }
 
