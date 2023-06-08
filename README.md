@@ -9,3 +9,10 @@ Konteinerinės technologijos
 Iki 500 operacijų per dieną
 
 # Sistemos sandara:
+Numatyta, kad kiekvienas komponentas bus savo konteneryje.
+- API
+- Svetainė
+- NGINX tarpinis serveris
+- PostgreSQL duomenų bazė
+- PGAdmin
+- Docker Mailserver
