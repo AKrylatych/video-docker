@@ -24,6 +24,8 @@ ssh $ssh_creds "podman run -d --name $appname -p 8080:80 \
 -e POSTGRES_PASSWORD=${POSTGRES_PASSWORD} \
 -e POSTGRES_DB=${POSTGRES_DB} \
 -e DB_HOST=${DB_HOST} \
+-v vidstorage:/usr/src/myapp/storage \
+-v phpconfigs:/usr/local/etc/php \
 --network internal $appname"
 
 # Cleanup

@@ -16,3 +16,11 @@ Numatyta, kad kiekvienas komponentas bus savo konteneryje.
 - PostgreSQL duomenų bazė
 - PGAdmin
 - Docker Mailserver
+
+# Paruošimo instrukcijos
+Numatyta, kad programa bus diegiama naudojant "Podman" konteinerių tvarkymo programą, tačiau galima tą atlikti ir su "Docker". 
+
+Taip pat yra numatoma, kad turite domeną, kurio nustatymus galite konfigūruoti. Domenas palengvins programos pasiekimą vartotojams, leis pašto serveriui korektiškai veikti. 
+2. Klonuoti GitHub repozitoriją
+2. Sukonfigūruoti tarpinį serverį
+3. Sukonfigūruoti API
