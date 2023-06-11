@@ -1,7 +1,6 @@
 <?php
 
 function sendPOST($url, $paramArray): string {
-    echo "PARAM ARRAY: ", var_dump($paramArray);
     $curl = curl_init();
 
     curl_setopt($curl, CURLOPT_URL, $url);
