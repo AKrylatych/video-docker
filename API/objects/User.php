@@ -13,6 +13,10 @@ class User
         $this->conn = $conn->conn;
     }
 
+    public function validate_session_token():bool {
+
+    }
+
     public function set_user_email($email) {
         $this->email = $email;
     }
