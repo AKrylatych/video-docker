@@ -4,14 +4,14 @@ include "../config/Database.php";
 include "User.php";
 class Video
 {
-    private $sessiontoken;
+    private $session_token;
     private $conn;
     const TARGET_DIR = "../storage/";
     const ALLOWED_FORMATS =  array("mp4", "wmv", "flv", "webm", "avi", "mov", "mkv");
 
-    public function __construct($conn, $sessiontoken) {
-        $this->conn = $conn->conn;
-        $this->sessiontoken = $sessiontoken;
+    public function __construct($conn, $session_token) {
+        $this->conn = $conn;
+        $this->session_token = $session_token;
     }
 
     function obfuscate_video_name($name):string {
@@ -21,12 +21,93 @@ class Video
         return str_rot13($name);
 
     }
-    function create_db_record() {
+
+    function create_fs_video_name(): ?string {
+        $query = "SELECT create_video_uuid()";
+        $result = pg_query($this->conn->conn, $query);
+        $pgobject = pg_fetch_object($result);
+        if (!$pgobject) { return NULL; }
+        return $pgobject->create_video_uuid;
+    }
+
+    function video_vardump($INPUT_VIDEOS) {
+        echo "<br><br><br>";
+        echo "video vardump";
+        var_dump($INPUT_VIDEOS);
+        echo "<br><br><br>";
+    }
+
+    function create_database_video_record($uid, $title, $fsname): bool {
+        $query = "SELECT public.new_video_record('$uid', '$title', '$fsname')";
+        $result = pg_query($this->conn->conn, $query);
+        $pgobject = pg_fetch_object($result);
+        if (!$result || !$pgobject) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    function upload_video($VIDEO):string {
+        $user = new User($this->conn);
+        $user->set_session_token($this->session_token);
+        if (!$user->validate_session_token()) {
+            return json_encode(array(
+                "success" => "false",
+                "message" => "Invalid session token. Please log in."
+            ));
+        }
+
+        $uploadOk = 1;
+        $hiddenVideoName = $this->create_fs_video_name();
+        $target_file = self::TARGET_DIR . $hiddenVideoName;
+        $videoFileType = strtolower(pathinfo($VIDEO["name"], PATHINFO_EXTENSION));
+        $output = NULL;
+        if (!in_array($videoFileType, self::ALLOWED_FORMATS)) {
+            $output = array(
+                "success" => "false",
+                "message" => "Sorry, only MP4, AVI, MOV, and MKV files are allowed."
+            );
+            $uploadOk = 0;
+        }
+
+        if ($uploadOk === 1 && move_uploaded_file($VIDEO["tmp_name"], $target_file)) {
+            $output = array(
+                "success" => "true",
+                "message" => "The file " . basename($VIDEO["name"]) . " has been uploaded.",
+                "vidname" => $hiddenVideoName
+            );
+            // Uploading that video records to database
+
+            $obfuscated_name = $this->obfuscate_video_name(basename($VIDEO["name"]));
+            $userid = $user->get_uid_from_session();
+            if (!$userid) {
+                $output = array(
+                    "success" => "false",
+                    "message" => "Failed getting uid from session.",
+                );
+            }
+            $result = $this->create_database_video_record($userid, $obfuscated_name, $hiddenVideoName);
+            if (!$result) {
+                $output = array(
+                  "success" => "false",
+                  "message" => "Failed uploading record to database."
+                );
+            }
+
+
+        } else {
+            $output = array(
+                "success" => "false",
+                "message" => "Failed to upload file."
+            );
+        }
+        return json_encode($output);
 
     }
-    function upload_video($INPUT_VIDEOS):string {
-
+    function upload_video_array($INPUT_VIDEOS):string {
         $user = new User($this->conn);
+        $user->set_session_token($this->session_token);
         if (!$user->validate_session_token()) {
             return json_encode(array(
                 "success" => "false",
@@ -37,9 +118,10 @@ class Video
         $jsonfinal = array();
         foreach ($INPUT_VIDEOS as $VIDEO) {
             $uploadOk = 1;
-            $hiddenVideoName = $this->obfuscate_video_name((basename($VIDEO["fileToUpload"]["name"])));
+            $hiddenVideoName = $this->create_fs_video_name();
             $target_file = self::TARGET_DIR . $hiddenVideoName;
-            $videoFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+            $videoFileType = strtolower(pathinfo($VIDEO["name"], PATHINFO_EXTENSION));
+            $output = NULL;
             if (!in_array($videoFileType, self::ALLOWED_FORMATS)) {
                 $output = array(
                     "success" => "false",
@@ -47,13 +129,12 @@ class Video
                 );
                 $uploadOk = 0;
             }
-            if ($uploadOk === 1 && move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
 
-
+            if ($uploadOk === 1 && move_uploaded_file($VIDEO["tmp_name"], $target_file)) {
                 $output = array(
                     "success" => "true",
-                    "message" => "The file " . basename($_FILES["fileToUpload"]["name"]) . " has been uploaded.",
-                    "vidname" => $this->obfuscate_video_name(basename($_FILES["fileToUpload"]["name"]))
+                    "message" => "The file " . basename($VIDEO["name"]) . " has been uploaded.",
+                    "vidname" => $hiddenVideoName
                 );
             } else {
                 $output = array(
@@ -61,7 +142,7 @@ class Video
                     "message" => "Failed to upload file."
                 );
             }
-            $jsonfinal = array_push($jsonfinal, $output);
+            $jsonfinal[] = $output;
         }
         return json_encode($jsonfinal);
     }

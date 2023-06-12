@@ -14,7 +14,14 @@ class User
     }
 
     public function validate_session_token():bool {
-
+        $query = "SELECT check_session_validity('$this->session_token'::uuid)";
+        $result = pg_query($this->conn, $query);
+        $pgobject = pg_fetch_object($result);
+        if ($pgobject) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public function set_user_email($email) {
@@ -37,6 +44,14 @@ class User
         } else {
             return false;
         }
+    }
+    public function get_uid_from_session() {
+        $query = "SELECT uid from public.user_logins
+                    WHERE login_token = '$this->session_token'";
+        $result = pg_query($this->conn, $query);
+        $pgobject = pg_fetch_object($result);
+        if (!$pgobject) { return false; }
+        return $pgobject->uid;
     }
     private function get_user_passhash() {
         $query = "SELECT password FROM public.users WHERE email = '$this->email'";
