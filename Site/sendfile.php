@@ -8,7 +8,7 @@
 <?php
 if (!isset($_COOKIE['session_token'])) {
     echo "you need to log in first!";
-    echo "<a href='index.html'>Login</a>";
+    echo "<a href='index.php'>Login</a>";
 } else {
     echo "<br><br>";
     echo '<form action="videocontrol/video_upload.php" method="post" enctype="multipart/form-data">

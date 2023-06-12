@@ -32,9 +32,9 @@ if ($result->success == "true") {
 
     setcookie("session_token", $result->session_token, $session_token_expiry, "/");
     echo "Prisijungta sėkmingai!";
-    echo "<a href='../index.html'>Back to index</a>";
+    echo "<a href='../index.php'>Back to index</a>";
 
 } else {
     echo "Klaidingas prisijungimas!";
-    echo "<a href='../index.html'>Back to index</a>";
+    echo "<a href='../index.php'>Back to index</a>";
 }
