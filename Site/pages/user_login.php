@@ -1,6 +1,5 @@
 <!doctype html>
 <html lang="en" data-bs-theme="auto">
-<head><script src="../assets/js/color-modes.js"></script>
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,10 +9,6 @@
     <title>Signin Template · Bootstrap v5.3</title>
 
     <link rel="canonical" href="https://getbootstrap.com/docs/5.3/examples/sign-in/">
-
-
-
-
 
     <link href="../assets/dist/css/bootstrap.min.css" rel="stylesheet">
 
@@ -113,7 +108,7 @@
             <label for="floatingPassword">Slaptažodis</label>
         </div>
 
-        <button class="btn btn-primary w-100 py-2" name="submit" type="submit">Sign in</button>
+        <button class="btn btn-primary w-100 py-2" name="submit" type="submit">Prisijungti</button>
     </form>
 </main>
 <script src="../assets/dist/js/bootstrap.bundle.min.js"></script>

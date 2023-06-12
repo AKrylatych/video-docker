@@ -1,9 +1,8 @@
 <!doctype html>
 <html lang="en" data-bs-theme="auto">
 <head>
-    <script src="../assets/js/color-modes.js"></script>
     <meta charset="utf-8">
-    <title>Titulinis</title>
+    <title>DUK</title>
     <link rel="canonical" href="https://getbootstrap.com/docs/5.3/examples/headers/">
     <link href="../assets/dist/css/bootstrap.min.css" rel="stylesheet">
 
@@ -28,7 +27,7 @@
                 if (isset($_COOKIE['session_token']) && $_COOKIE['session_token'] != "") {
 
                     $block = <<<HTML
-                         <li><a href="../videocontrol/video_listing.php" class="nav-link px-2">Video</a></li>
+                         <li><a href="../pages/video_vidlist.php" class="nav-link px-2">Video</a></li>
                     HTML;
                     echo $block;
                 } else {

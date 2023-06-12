@@ -7,7 +7,7 @@ include_once "../config/Database.php";
 $conn = new Database();
 $user = new User($conn);
 
-$user->set_session_token(isset($_GET['token']) ? $_GET['token'] : die());
+$user->set_session_token(isset($_POST['session_token']) ? $_POST['session_token'] : die());
 if ($user->logout_user()) {
     $output = array(
         "success" => "true",

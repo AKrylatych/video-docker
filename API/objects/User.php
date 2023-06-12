@@ -71,6 +71,23 @@ class User
         }
 
     }
+    function return_all_user_vids(): ?string {
+//        $query = "SELECT find_user_uploads('$this->session_token'::uuid)";
+        $query = "SELECT vs.video_file_name
+                FROM public.user_logins ul
+                JOIN public.users u ON ul.uid = u.uid
+                JOIN public.video_storage vs ON u.uid = vs.uid
+                WHERE ul.login_token = '$this->session_token'";
+        echo "sessiontoken: " . $this->session_token;
+        echo "query: " . $query . "<br><br>";
+        $result = pg_query($this->conn, $query);
+        if (!$result) { return NULL; }
+        $videoFileNames = [];
+        while ($row = pg_fetch_assoc($result)) {
+            $videoFileNames[] = $row['video_file_name'];
+        }
+        return json_encode($videoFileNames);
+    }
     public function login_user() {
         if ($this->password_check()) {
             $query = "SELECT user_login('$this->email'::varchar, '$this->password_hash'::text)";

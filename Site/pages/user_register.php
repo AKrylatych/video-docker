@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en" data-bs-theme="auto">
-<head><script src="../assets/js/color-modes.js"></script>
+<head>
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -98,7 +98,7 @@
 <body class="d-flex align-items-center py-4 bg-body-tertiary">
 
 <main class="form-signin w-100 m-auto">
-    <form action="user_login.php" method="post">
+    <form action="user_register.php" method="post">
         <a href="../index.php">
             <img class="mb-4" src="../images/fullLogo.png" alt="" width="300">
         </a>
@@ -113,7 +113,7 @@
             <label for="floatingPassword">Slaptažodis</label>
         </div>
 
-        <button class="btn btn-primary w-100 py-2" name="submit" type="submit">Sign in</button>
+        <button class="btn btn-primary w-100 py-2" name="submit" type="submit">Registruotis</button>
     </form>
 </main>
 <script src="../assets/dist/js/bootstrap.bundle.min.js"></script>
@@ -125,18 +125,27 @@ if (isset($_POST['submit'])) {
     $email = $_POST['email'];
     $password = $_POST['password'];
 
-    $url = getdomain(apiDomain) . "/user/login.php";
+    $url = getdomain(apiDomain) . "/user/signup.php";
     $paramArray = array(
         "email" => $email,
         "password" => $password
     );
     $result = json_decode(sendPOST($url, $paramArray));
+    var_dump($result);
     if ($result->success == "true") {
-        $session_token_expiry = strtotime($result->session_token_expiry);
-        setcookie("session_token", $result->session_token, $session_token_expiry, "/");
-
-        echo "<script>window.location.href='../index.php'</script>";
-
+        $url = getdomain(apiDomain) . "/user/login.php";
+        $paramArray = array(
+            "email" => $email,
+            "password" => $password
+        );
+        $result = json_decode(sendPOST($url, $paramArray));
+        if ($result->success == "true") {
+            $session_token_expiry = strtotime($result->session_token_expiry);
+            setcookie("session_token", $result->session_token, $session_token_expiry, "/");
+            echo "<script>window.location.href='../index.php'</script>";
+        } else {
+            echo "<script>window.location.href='../index.php'</script>";
+        }
     } else {
         echo "<script>window.location.href='../index.php'</script>";
     }

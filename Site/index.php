@@ -1,9 +1,3 @@
-<?php
-//if (isset($_COOKIE['session_token']) && $_COOKIE['session_token'] != "") {
-//    echo "cookie is set...?";
-//    var_dump($_COOKIE);
-//}
-?>
 <!doctype html>
 <html lang="en" data-bs-theme="auto">
   <head>
@@ -33,7 +27,7 @@
           if (isset($_COOKIE['session_token']) && $_COOKIE['session_token'] != "") {
 
               $block = <<<HTML
-                         <li><a href="videocontrol/video_listing.php" class="nav-link px-2">Video</a></li>
+                         <li><a href="pages/video_vidlist.php" class="nav-link px-2">Video</a></li>
                     HTML;
               echo $block;
           } else {
@@ -65,8 +59,31 @@
         }
         ?>
     </header>
-  </div>
-
+      <div class="px-4 pt-5 my-5 text-center border-bottom">
+          <h1 class="display-4 fw-bold text-body-emphasis">Saugokite savo klipus</h1>
+          <div class="col-lg-6 mx-auto">
+              <p class="lead mb-4">Paprastai ir greitai saugokite savo klipus, dalinkites jais su kitais! Niekada taip paprasta dar nebuvo!</p>
+          </div>
+          <div class="overflow-hidden" style="max-height: 50vh;">
+              <div class="container px-5">
+                  <img src="images/DALL·E%202023-06-12%2023.38.31%20-%20server%20room%20realistic.png" class="img-fluid border rounded-3 shadow-lg mb-4" alt="Example image" width="700" height="500" loading="lazy">
+              </div>
+          </div>
+      </div>
+    <div class="container col-xxl-8 px-4 py-5">
+        <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
+            <div class="col-10 col-sm-8 col-lg-6">
+                <img src="images/server-security-1666200049.jpg" class="d-block mx-lg-auto img-fluid" alt="Bootstrap Themes" width="700" height="500" loading="lazy">
+            </div>
+            <div class="col-lg-6">
+                <h1 class="display-5 fw-bold text-body-emphasis lh-1 mb-3">Saugumas ir garantuotas patogumas</h1>
+                <p class="lead">Naudodami savo patentuota MaxiCool technologiją, galime užtikrinti jūsų duomenų saugumą ir konfidencialumą. <br> Duomenis šifruojame vienpusiais šifravimo algoritmais, kurių nulaužimui reiktų milijonus metų</p>
+                <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+                    <button type="button" onclick="window.location.href='pages/user_register.php'" class="btn btn-primary btn-lg px-4 me-md-2">Prisijunk!</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 </main>
 
