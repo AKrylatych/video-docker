@@ -7,8 +7,25 @@ include_once "../config/Database.php";
 $conn = new Database();
 $user = new User($conn);
 
-$user->set_user_email(isset($_GET['email']) ? $_GET['email'] : die());
-$user->set_user_password(isset($_GET['password']) ? $_GET['password'] : die());
+if (isset($_POST['email'])) {
+    $user->set_user_email($_POST['email']);
+} else {
+    print_r(json_encode(array(
+        "success" => "false",
+        "message" => "email not supplied."
+    )));
+    die();
+}
+if (isset($_POST['password'])) {
+    $user->set_user_password($_POST['password']);
+} else {
+    print_r(json_encode(array(
+        "success" => "false",
+        "message" => "email not supplied."
+    )));
+    die();
+}
+
 if ($user->login_user()) {
     $output = array(
         "success" => "true",
