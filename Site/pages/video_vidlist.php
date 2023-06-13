@@ -60,18 +60,42 @@
             ?>
         </header>
     </div>
+    <?php
+    echo '<form action="fileupload.php" method="post" enctype="multipart/form-data">';
+    echo '<input type="file" class="form-control" name="fileToUpload" id="fileToUpload">';
+    echo '<input type="submit" name="submit">';
+    echo '</form>';
+
+    ?>
 
     <?php
-
+    error_reporting(E_ALL);
+    ini_set('display_errors', 1);
     include "../Libs/API-interface.php";
     include "../Libs/Domain.php";
     $paramArray = array(
         "session_token" => $_COOKIE["session_token"],
     );
-    echo "cookie: " . $_COOKIE["session_token"];
     $url = getdomain(apiDomain) . "/video/view.php";
-    $result = sendPOST($url, $paramArray);
-    var_dump($result);
+    $result = json_decode(sendPOST($url, $paramArray));
+    if ($result == NULL) {
+        echo "Klaida gaunat vaizdo klipus. Ar jūs jau įkėles vaizdus?";
+        die();
+    }
+        foreach ($result as $key => $video) {
+            echo "<br><br>";
+            $videotitle = str_rot13($video->video_title);
+            $fileurl = "http://storage.video-docker.online/$video->video_file_name";
+            echo "<a href=$fileurl>";
+            echo "<h3>$videotitle</h3></a>";
+            echo '<video width="400" controls>';
+            echo'<source src="'.$fileurl.'">';
+            echo'</video><br>';
+            echo "<form action='filedelete.php'>";
+            echo "<input type='hidden' name=$video->video_file_name>";
+            echo "<input type='submit' value='Trinti' name='submit'>";
+            echo "</form>";
+        }
     ?>
 </main>
 

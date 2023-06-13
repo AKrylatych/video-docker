@@ -2,7 +2,7 @@
 <html lang="en" data-bs-theme="auto">
 <head>
     <meta charset="utf-8">
-    <title>DUK</title>
+    <title>Apie</title>
     <link rel="canonical" href="https://getbootstrap.com/docs/5.3/examples/headers/">
     <link href="../assets/dist/css/bootstrap.min.css" rel="stylesheet">
 
@@ -22,12 +22,12 @@
 
             <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
                 <li><a href="../index.php" class="nav-link px-2 ">Pagrindinis</a></li>
-                <li><a href="apie.php" class="nav-link px-2 ">Apie</a></li>
+                <li><a href="apie.php" class="nav-link px-2 link-secondary">Apie</a></li>
                 <?php
                 if (isset($_COOKIE['session_token']) && $_COOKIE['session_token'] != "") {
 
                     $block = <<<HTML
-                         <li><a href="../pages/video_vidlist.php" class="nav-link px-2">Video</a></li>
+                         <li><a href="video_vidlist.php" class="nav-link px-2">Video</a></li>
                     HTML;
                     echo $block;
                 } else {
@@ -37,8 +37,7 @@
                     echo $block;
                 }
                 ?>
-
-                <li><a href="#" class="nav-link px-2 link-secondary">D.U.K</a></li>
+                <li><a href="duk.php" class="nav-link px-2">D.U.K</a></li>
             </ul>
 
             <?php
@@ -62,27 +61,44 @@
             ?>
         </header>
     </div>
-    <div class="container col-xxl-8 px-4 py-5">
-        <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
-            <div class="col-lg-6">
-                <ol>
-                    <li>
-                        <p> test</p>
-                    </li>
-                    <li>
-                        <p>Ar saugu?</p>
-                        <b>jo</b>
-                    </li>
-                    <li>
-                        <p>Ar mokama</p>
-                        <b>Ne :D</b>
-                    </li>
+    <div class="px-4 pt-5 my-5 text-center border-bottom">
+        <h1 class="display-4 fw-bold text-body-emphasis">Failo siuntimas</h1>
+        <div class="col-lg-6 mx-auto">
+            <?php
 
-                </ol>
-                <p class="lead"></p>
+            include "../Libs/API-interface.php";
+            include "../Libs/Domain.php";
 
-            </div>
+            if($_FILES != NULL) {
+                $url = getdomain(apiDomain) . "/video/upload.php";
+                $tmpfile = $_FILES['fileToUpload']['tmp_name'];
+                $filename = basename($_FILES['fileToUpload']['name']);
+                $mime = $_FILES['fileToUpload']['type'];
+                $session_token = $_COOKIE['session_token'];
+                $paramArray = array(
+                    'fileToUpload' => curl_file_create($tmpfile, $mime, $filename),
+                    'session_token' => $session_token
+                );
+//    $result = json_decode(sendPOST($url, $paramArray));
+                $result = json_decode(sendPOST($url, $paramArray));
+                if ($result->success == "true") {
+                    echo "Failas nusiųstas sėkmingai";
+                }
+            } else if(!isset($_COOKIE["session_token"])) {
+                print_r(json_encode(array(
+                    "success" => "false",
+                    "message" => "No valid login token provided. Please input a valid session token."
+                )));
+            } else {
+                print_r(json_encode(array(
+                    "success" => "false",
+                    "message" => "No files submitted."
+                )));
+            }
+            ?>
+
         </div>
+
     </div>
 
 </main>
@@ -90,3 +106,7 @@
 
 </body>
 </html>
+
+
+
+

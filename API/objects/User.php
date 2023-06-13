@@ -72,21 +72,43 @@ class User
 
     }
     function return_all_user_vids(): ?string {
-//        $query = "SELECT find_user_uploads('$this->session_token'::uuid)";
-        $query = "SELECT vs.video_file_name
-                FROM public.user_logins ul
-                JOIN public.users u ON ul.uid = u.uid
-                JOIN public.video_storage vs ON u.uid = vs.uid
-                WHERE ul.login_token = '$this->session_token'";
-        echo "sessiontoken: " . $this->session_token;
-        echo "query: " . $query . "<br><br>";
+
+        $query = "SELECT vs.video_file_name, vs.video_title
+            FROM public.user_logins ul
+            JOIN public.users u ON ul.uid = u.uid
+            JOIN public.video_storage vs ON u.uid = vs.uid
+            WHERE ul.login_token = '$this->session_token'";
         $result = pg_query($this->conn, $query);
         if (!$result) { return NULL; }
-        $videoFileNames = [];
+
+        $videoData = [];
         while ($row = pg_fetch_assoc($result)) {
-            $videoFileNames[] = $row['video_file_name'];
+            $videoData[] = array(
+                'video_file_name' => $row['video_file_name'],
+                'video_title' => $row['video_title']
+            );
         }
-        return json_encode($videoFileNames);
+        return json_encode($videoData);
+//        $query = "SELECT vs.video_file_name
+//                FROM public.user_logins ul
+//                JOIN public.users u ON ul.uid = u.uid
+//                JOIN public.video_storage vs ON u.uid = vs.uid
+//                WHERE ul.login_token = '$this->session_token'";
+//        $query2 = "SELECT vs.video_title
+//                FROM public.user_logins ul
+//                JOIN public.users u ON ul.uid = u.uid
+//                JOIN public.video_storage vs ON u.uid = vs.uid
+//                WHERE ul.login_token = '$this->session_token'";
+//        $result = pg_query($this->conn, $query);
+//        $result2 = pg_query($this->conn, $query);
+//        if (!$result || ) { return NULL; }
+//        $videoFileNames = [];
+//        while ($row = pg_fetch_assoc($result)) {
+//            $videoFileNames[] = $row['video_file_name'];
+//        }
+//
+////        var_dump($videoFileNames);
+//        return json_encode($videoFileNames);
     }
     public function login_user() {
         if ($this->password_check()) {
