@@ -2,6 +2,7 @@
 
 include "../config/Database.php";
 include "User.php";
+include "mailman.php";
 class Video
 {
     private $session_token;
@@ -48,6 +49,33 @@ class Video
         }
     }
 
+    function delete_video($name)
+    {
+        $query = "DELETE FROM public.video_storage
+        WHERE video_file_name = '$name'";
+        $result = pg_query($this->conn->conn, $query);
+        echo "result is: " . print_r($result);
+        var_dump($result);
+        $pgobject = pg_fetch_object($result);
+        var_dump($pgobject);
+        if (!$result || !$pgobject) {
+            echo "so the query is wrong";
+            var_dump($result);
+            echo "<hr>";
+            var_dump($pgobject);
+            return json_encode(array(
+                "success" => "false"
+            ));
+        } else {
+            unlink("../storage/$name");
+            echo "sike it works!";
+            return json_encode(array(
+                "success" => "true"
+            ));
+        }
+
+    }
+
 
     function upload_video($VIDEO):string {
         $user = new User($this->conn);
@@ -78,6 +106,8 @@ class Video
                 "message" => "The file " . basename($VIDEO["name"]) . " has been uploaded.",
                 "vidname" => $hiddenVideoName
             );
+            $mail = new Mailman();
+            $mail->send_upload_mail($user->email, "New upload", "Your video is: $hiddenVideoName");
             // Uploading that video records to database
 
             $obfuscated_name = $this->obfuscate_video_name(basename($VIDEO["name"]));

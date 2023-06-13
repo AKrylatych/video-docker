@@ -2,7 +2,7 @@
 include_once "../config/Database.php";
 class User
 {
-    private $email;
+    public $email;
     private $password;
     private $password_hash;
     public $conn;

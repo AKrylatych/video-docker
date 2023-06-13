@@ -13,7 +13,7 @@ DB_HOST="db.video-docker.online"
 podman build -t $appname .
 rm ../btools/$appname.tar
 podman save -o ../btools/$appname.tar $appname:latest
-rsync -avz ../btools/$appname.tar $ssh_creds:~/$appname.tar
+rsync -avz ../btools/$appname.tar $ssh_creds:~/$appname.tar --progress
 
 # Load and run image
 ssh $ssh_creds "podman load -i $appname.tar"

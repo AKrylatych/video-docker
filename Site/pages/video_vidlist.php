@@ -65,7 +65,6 @@
     echo '<input type="file" class="form-control" name="fileToUpload" id="fileToUpload">';
     echo '<input type="submit" name="submit">';
     echo '</form>';
-
     ?>
 
     <?php
@@ -91,8 +90,8 @@
             echo '<video width="400" controls>';
             echo'<source src="'.$fileurl.'">';
             echo'</video><br>';
-            echo "<form action='filedelete.php'>";
-            echo "<input type='hidden' name=$video->video_file_name>";
+            echo "<form action='filedelete.php' method='post'>";
+            echo "<input type='hidden' name='videoname' value=$video->video_file_name>";
             echo "<input type='submit' value='Trinti' name='submit'>";
             echo "</form>";
         }
